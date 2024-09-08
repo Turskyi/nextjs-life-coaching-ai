@@ -1,4 +1,4 @@
-import openai, { getEmbedding } from '@/lib/openai';
+import openai from '@/lib/openai';
 import { OpenAIStream, StreamingTextResponse } from 'ai';
 import { ChatCompletionMessage } from 'openai/resources/index.mjs';
 
@@ -9,10 +9,6 @@ export async function POST(req: Request) {
 
     // Take into consideration only last 6 messages of the conversation.
     const messagesTruncated = messages.slice(-6);
-
-    const embedding = await getEmbedding(
-      messagesTruncated.map((message) => message.content).join('\n'),
-    );
 
     // Since this is an anonymous chat, we won't query for user-specific goals.
     const systemMessage: ChatCompletionMessage = {
