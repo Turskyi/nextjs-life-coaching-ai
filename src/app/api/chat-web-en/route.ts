@@ -7,21 +7,18 @@ import { ChatCompletionMessage } from 'openai/resources/index.mjs';
 
 export async function POST(req: Request) {
   try {
-    console.log('Deb: await req.json');
     const body = await req.json();
-    console.log('Deb: body.messages');
+
     const messages: ChatCompletionMessage[] = body.messages;
-    console.log('Deb: messages.slice');
+
     // Take into consideration only last 6 messages of the conversation.
     const messagesTruncated = messages.slice(-6);
-    console.log('Deb: await getEmbedding');
+
     const embedding = await getEmbedding(
       messagesTruncated.map((message) => message.content).join('\n'),
     );
-    console.log('Deb: auth');
-    const { userId } = auth();
 
-    console.log('userId: ' + userId + ' <<');
+    const { userId } = auth();
 
     const vectorQueryResponse = await goalsIndex.query({
       vector: embedding,
@@ -38,20 +35,19 @@ export async function POST(req: Request) {
       },
     });
 
-    console.log('Relevant goals found: ', relevantGoals);
-
     let goalsContent = relevantGoals
-    .map((goal) => {
-      let goalText = `Title: ${goal.title}`;
-      if (goal.content) {
-        goalText += `\n\nContent:\n${goal.content}`;
-      }
-      return goalText;
-    })
-    .join('\n\n');
+      .map((goal) => {
+        let goalText = `Title: ${goal.title}`;
+        if (goal.content) {
+          goalText += `\n\nContent:\n${goal.content}`;
+        }
+        return goalText;
+      })
+      .join('\n\n');
 
     if (!goalsContent) {
-      goalsContent = "No relevant goals found. Help the user define a S.M.A.R.T. goal (Specific, Measurable, Achievable, Relevant, Time-bound) and teach them how to set it.";
+      goalsContent =
+        'No relevant goals found. Help the user define a S.M.A.R.T. goal (Specific, Measurable, Achievable, Relevant, Time-bound) and teach them how to set it.';
     }
 
     const systemMessage: ChatCompletionMessage = {

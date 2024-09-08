@@ -7,6 +7,39 @@ import {
   updateGoalSchema,
 } from '@/lib/validation/goal';
 import { auth } from '@clerk/nextjs/server';
+import { NextRequest, NextResponse } from 'next/server';
+
+export async function GET(request: NextRequest) {
+  const url = new URL(request.nextUrl);
+  const page = url.searchParams.get('page');
+
+  const body = await request.json();
+  const { userId } = body;
+
+  if (page) {
+    const currentPage = parseInt(page);
+    const pageSize = 8;
+    const heroItemCount = 1;
+
+    const totalItemCount = await prisma.goal.count();
+    const totalPages = Math.ceil((totalItemCount - heroItemCount) / pageSize);
+    const goals = await prisma.goal.findMany({
+      orderBy: { id: 'desc' },
+      skip: (currentPage - 1) * pageSize,
+      take: pageSize,
+      where: { userId },
+    });
+
+    return NextResponse.json({ goals: goals, totalPages });
+  } else {
+    const allGoals = await prisma.goal.findMany({
+      orderBy: { id: 'desc' },
+      where: { userId },
+    });
+
+    return NextResponse.json({ goals: allGoals });
+  }
+}
 
 export async function POST(req: Request) {
   try {

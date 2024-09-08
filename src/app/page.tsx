@@ -5,7 +5,6 @@ import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { APP_NAME } from '../../constants';
 import { auth } from '@clerk/nextjs/server';
-import AIChatButton from '@/components/AIChatButton';
 import AnonymousAIChatButton from '@/components/AnonymousAiChatButton';
 
 export default function Home() {

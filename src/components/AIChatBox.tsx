@@ -87,7 +87,7 @@ export default function AIChatBox({ open, onClose }: AIChatBoxProps) {
   }, [open]);
 
   const lastMessageIsUser = messages[messages.length - 1]?.role === 'user';
-console.log('Deb: error: ' + error + ' <') // undefined
+
   return (
     <div
       className={cn(
@@ -157,9 +157,8 @@ function ChatMessage({
 }: {
   message: Pick<Message, 'role' | 'content'>;
 }) {
-  console.log('Deb: use user');
   const { user } = useUser();
-  console.log('Deb: user: ' + user + ' <<');
+
   const isAiMessage = role === 'assistant';
 
   return (
