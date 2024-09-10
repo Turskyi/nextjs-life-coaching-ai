@@ -11,6 +11,7 @@ const isPublicRoute = createRouteMatcher([
   '/api/anonymous-chat-android-ua',
   '/api/anonymous-chat-ios-en',
   '/api/anonymous-chat-ios-ua',
+  '/api/goals',
 ]);
 
 export default clerkMiddleware((auth, request) => {
