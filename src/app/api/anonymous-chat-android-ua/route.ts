@@ -29,7 +29,7 @@ export async function POST(req: Request) {
   } catch (error) {
     console.error(error);
     return new Response(
-      JSON.stringify({ error: '( ⚆ _ ⚆ )\nВнутрішня помилка сервера' }),
+      JSON.stringify({ error: '( ⚆ _ ⚆ )\nВнутрішня помилка сервера.' }),
       { status: 500 },
     );
   }

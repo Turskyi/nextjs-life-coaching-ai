@@ -11,14 +11,21 @@ export async function POST(req: Request) {
 
     const messages: ChatCompletionMessage[] = body.messages;
 
+    // Extract the userId from the request body.
+    const userId: string = body.userId;
+
+    if (!userId || userId.trim() === '') {
+      return new Response('(｡•̀ᴗ-)✧ Unauthorized: userId is missing', {
+        status: 401,
+      });
+    }
+
     // Take into consideration only last 6 messages of the conversation.
     const messagesTruncated = messages.slice(-6);
 
     const embedding = await getEmbedding(
       messagesTruncated.map((message) => message.content).join('\n'),
     );
-
-    const { userId } = auth();
 
     const vectorQueryResponse = await goalsIndex.query({
       vector: embedding,
@@ -53,7 +60,7 @@ export async function POST(req: Request) {
     const systemMessage: ChatCompletionMessage = {
       role: 'assistant',
       content:
-        'You are a chatbot for the Android app "Life-Coaching AI" where users can record their personal goals and chat with you about them. You impersonate a professional Life-Coach. You prefer asking questions rather than answering them, using life-coaching techniques. If the user does not have goals, you help them define one. If the user has goals, you respond to the user\'s request based on their existing goals. ' +
+        "You are a chatbot for an  website https://lifecoach.turskyi.com where user can record their personal goals and chat with you about them. You impersonate a professional Life-Coach. You prefer ask questions rather than answer them, using life-coaching techniques. If user does not have goals you help him define one, if user has goals you respond to the user's request based on their existing goals. " +
         'The relevant goals for this query are:\n' +
         goalsContent,
     };
