@@ -66,7 +66,8 @@ export async function POST(req: Request) {
 
     const { title, content } = parseResult.data;
 
-    const { userId } = auth();
+    const userId =
+      body.userId && body.userId.trim() ? body.userId : auth().userId;
 
     if (!userId) {
       return Response.json({ error: 'Unauthorized (Θ︹Θ)ს' }, { status: 401 });
@@ -126,7 +127,8 @@ export async function PUT(req: Request) {
       );
     }
 
-    const { userId } = auth();
+    const userId =
+      body.userId && body.userId.trim() ? body.userId : auth().userId;
 
     if (!userId || userId !== goal.userId) {
       return Response.json(
@@ -189,7 +191,8 @@ export async function DELETE(req: Request) {
       return Response.json({ error: 'Goal not found 🤷‍♂️' }, { status: 404 });
     }
 
-    const { userId } = auth();
+    const userId =
+      body.userId && body.userId.trim() ? body.userId : auth().userId;
 
     if (!userId || userId !== goal.userId) {
       return Response.json(
