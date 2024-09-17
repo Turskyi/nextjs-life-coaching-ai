@@ -14,6 +14,7 @@ const isPublicRoute = createRouteMatcher([
   '/api/anonymous-chat-ios-en',
   '/api/anonymous-chat-ios-ua',
   '/api/goals',
+  '/api/delete-user',
 ]);
 
 export default clerkMiddleware((auth, request) => {
