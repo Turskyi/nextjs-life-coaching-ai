@@ -2,6 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
+import { HOME } from '../../../constants';
 
 export default function AccountDeletedPage() {
   const router = useRouter();
@@ -18,7 +19,7 @@ export default function AccountDeletedPage() {
       </p>
 
       <div className="space-x-4">
-        <Button onClick={() => router.push('/')} variant="default">
+        <Button onClick={() => router.push(HOME)} variant="default">
           Go to Home
         </Button>
         <Button onClick={() => router.push('/sign-up')} variant="secondary">
