@@ -1,13 +1,12 @@
 import { H1 } from '@/components/ui/H1';
 import { H2 } from '@/components/ui/H2';
 import { Metadata } from 'next';
-import { APP_NAME, AI_MODEL_NAME } from '../../../constants';
+import { APP_NAME, AI_MODEL_NAME, DEVELOPER_DOMAIN } from '../../../constants';
 
 export const metadata: Metadata = {
   title: 'Privacy Policy',
 };
 
-const DEVELOPER_DOMAIN = 'turskyi.com';
 const updateDate = 'September 2024';
 
 export default function Page() {
