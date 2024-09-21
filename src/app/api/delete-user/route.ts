@@ -1,12 +1,13 @@
 import { auth, clerkClient } from '@clerk/nextjs/server';
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/lib/db/prisma';
 import { goalsIndex } from '@/lib/db/pinecone';
 
-export async function DELETE(req: Request) {
-  const body = await req.json();
-  const userId =
-    body.userId && body.userId.trim() ? body.userId : auth().userId;
+export async function DELETE(request: NextRequest) {
+  const url = new URL(request.nextUrl);
+
+  const userId = url.searchParams.get('userId')?.trim() || auth().userId;
+
 
   if (!userId) {
     return NextResponse.json(

@@ -19,7 +19,7 @@ export default function AccountDeletedPage() {
       </p>
 
       <div className="space-x-4">
-        <Button onClick={() => router.push(HOME)} variant="default">
+        <Button onClick={() => router.push('/')} variant="default">
           Go to Home
         </Button>
         <Button onClick={() => router.push('/sign-up')} variant="secondary">

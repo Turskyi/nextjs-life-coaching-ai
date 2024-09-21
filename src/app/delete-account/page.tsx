@@ -18,13 +18,13 @@ export default function DeleteAccountPage() {
     setError(null);
 
     try {
+      const encodedUserId = userId ? encodeURIComponent(userId) : '';
       // Send the delete request to API route.
-      const response = await fetch('/api/delete-user', {
+      const response = await fetch(`/api/delete-user?userId=${encodedUserId}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ userId }),
       });
 
       const result = await response.json();

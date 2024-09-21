@@ -14,7 +14,7 @@ export async function GET(request: NextRequest) {
 
   const page = url.searchParams.get('page');
 
-  const userId = url.searchParams.get('userId');
+  const userId = url.searchParams.get('userId')?.trim() || auth().userId;
 
   if (!userId) {
     return NextResponse.json(
