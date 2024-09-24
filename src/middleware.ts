@@ -3,6 +3,7 @@ import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server';
 const isPublicRoute = createRouteMatcher([
   '/',
   '/privacy-android',
+  '/privacy',
   '/instruction',
   '/account-deleted',
   '/sign-in(.*)',
