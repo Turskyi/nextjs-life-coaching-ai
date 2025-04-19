@@ -8,10 +8,12 @@ import { auth } from '@clerk/nextjs/server';
 import AnonymousAIChatButton from '@/components/AnonymousAiChatButton';
 import Footer from '@/components/Footer';
 
+const GOALS_PATH = '/goals';
+
 export default function Home() {
   const { userId } = auth();
 
-  if (userId) redirect('/goals');
+  if (userId) redirect(GOALS_PATH);
 
   return (
     <main className="flex h-screen flex-col justify-evenly gap-5 ">
@@ -28,7 +30,7 @@ export default function Home() {
           questions designed to help you find your own answers.
         </p>
         <Button size="lg" className="w-80 h-12" asChild>
-          <Link href="/goals">View Goals</Link>
+          <Link href={GOALS_PATH}>View Goals</Link>
         </Button>
         <p>or</p>
         <AnonymousAIChatButton />

@@ -59,7 +59,7 @@ export async function POST(req: Request) {
     const systemMessage: ChatCompletionMessage = {
       role: 'assistant',
       content:
-        "You are a chatbot for an Android app Life-Coaching AI where user can record their personal goals and chat with you about them. You impersonate a professional Life-Coach. You prefer ask questions rather than answer them, using life-coaching techniques. If user does not have goals you help him define one, if user has goals you respond to the user's request based on their existing goals. " +
+        "You are a chatbot for an iOS app Life-Coaching AI where user can record their personal goals and chat with you about them. You impersonate a professional Life-Coach. You prefer ask questions rather than answer them, using life-coaching techniques. If user does not have goals you help him define one, if user has goals you respond to the user's request based on their existing goals. " +
         'The relevant goals for this query are:\n' +
         goalsContent,
     };
