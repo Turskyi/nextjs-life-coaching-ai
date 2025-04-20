@@ -2,6 +2,9 @@ import { H1 } from '@/components/ui/H1';
 import { H2 } from '@/components/ui/H2';
 import { Metadata } from 'next';
 import { APP_NAME, DEVELOPER_DOMAIN } from '../../../constants';
+import Link from 'next/link';
+import Image from 'next/image';
+import logo from '../../assets/logo.png';
 
 export const metadata: Metadata = {
   title: 'Privacy Policy',
@@ -12,24 +15,36 @@ const updateDate = 'October 2024';
 export default function Page() {
   return (
     <section className="space-y-6">
-      <div className="container mx-auto p-4 mt-6 space-y-6">
-        <div className="space-y-3">
-          <H1>Privacy Policy For &quot;{APP_NAME}&quot; Website</H1>
+      <div className="flex justify-start px-1 absolute left-1 top-2 sm:left-4 sm:top-4 sm:px-8">
+        <Link href="/">
+          <Image
+            src={logo}
+            alt={`${APP_NAME} Logo`}
+            width={50}
+            height={50}
+            className="rounded-full transition hover:opacity-80"
+          />
+        </Link>
+      </div>
+      <div className="container mx-auto p-4 mt-6 space-y-6 pt-4 sm:pt-0">
+        <div className="space-y-3 mt-8">
+          <H1>
+            Privacy Policy for &quot;{APP_NAME}&quot; Website and Mobile App
+          </H1>
           <p>Last Updated: {updateDate}</p>
         </div>
         <div className="space-y-3">
           <H2>Introduction</H2>
           <p>
-            Welcome to the {APP_NAME} website. This Privacy Policy outlines our
-            practices regarding the collection, use, and disclosure of
-            information that we receive through our website. Our primary goal is
-            to provide you with an interactive AI experience while respecting
-            your privacy.
+            Welcome to the {APP_NAME} website and mobile application. This
+            Privacy Policy outlines our practices regarding the collection, use,
+            and disclosure of information that we receive through our website
+            and mobile app.
           </p>
           <H2>Information We Collect</H2>
           <p>
             We collect the following personal data when you use the {APP_NAME}{' '}
-            website:
+            website or mobile app:
           </p>
           <ul>
             <li>
@@ -61,8 +76,8 @@ export default function Page() {
             is stored safely.
           </p>
           <p>
-            Additionally, you can delete your data anytime through the website
-            or by visiting our{' '}
+            Additionally, you can delete your data anytime through the app or by
+            visiting our{' '}
             <a href="/instruction" target="_blank" rel="noopener noreferrer">
               Account Deletion Instructions
             </a>{' '}
@@ -73,10 +88,11 @@ export default function Page() {
           <H2>Use of Information</H2>
           <p>
             - <strong>Email and User ID</strong>: These are used to authenticate
-            and identify you within the website.
+            and identify you within the website and mobile app.
             <br />- <strong>Goals</strong>: Your personal goals, including their
             title and content, are stored to provide you with the ability to
-            view, edit, and manage your goals across sessions.
+            view, edit, and manage your goals across sessions and across
+            devices.
           </p>
           <H2>Data Retention and Deletion</H2>
           <p>
@@ -87,23 +103,23 @@ export default function Page() {
           </p>
           <p>
             - <strong>Goal Management</strong>: You can delete any of your goals
-            at any time within the website. Once deleted, they are permanently
-            removed from our database.
+            at any time within the website or mobile app. Once deleted, they are
+            permanently removed from our database.
           </p>
           <p>
             - <strong>Account Deletion</strong>: You can delete your account and
             all associated data by following the instructions on our{' '}
             <a href="/instruction">Account Deletion Instructions</a> page. To
-            manage your account details (such as updating your email), log in to
-            the app and navigate to the account button at the top of the{' '}
-            <a href="/goals">Goals</a> page. From there, select &quot;Manage
-            account&quot; to access account management options provided by
-            Clerk. Please note that deleting your account via Clerk only removes
-            your account details, but not your goals. To delete your account
-            along with your goals, follow the instructions on our account
-            deletion page. After deleting your account, all associated data,
-            including your email, user ID, and goals, will be permanently
-            removed.
+            manage your account details (note: account details can only be edited on the website version due to current mobile limitations; the mobile app allows you to use your credentials or delete your account entirely), log in
+            and navigate to the account button at the top of the{' '}
+            <a href="/goals">Goals</a> page. From
+            there, select &quot;Manage account&quot; to access account
+            management options provided by Clerk. Please note that deleting your
+            account via Clerk only removes your account details, but not your
+            goals. To delete your account along with your goals, follow the
+            instructions on our account deletion page. After deleting your
+            account, all associated data, including your email, user ID, and
+            goals, will be permanently removed.
           </p>
           <H2>Data Sharing and Disclosure</H2>
           <p>
