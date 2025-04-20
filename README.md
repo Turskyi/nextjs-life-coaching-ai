@@ -94,7 +94,14 @@ bun dev
 ```
 
 - Open [http://localhost:3000](http://localhost:3000) with your browser to
-   see the result.
+  see the result.
+
+### Important Middleware Configuration
+
+If you add a new API route or UI page and want it to be publicly accessible
+(i.e., not protected by authentication), make sure to add the route path to
+the list of `isPublicRoute` in your `middleware.ts` file. Otherwise, it may
+result in unexpected 404 errors during deployment on Vercel.
 
 ### Building for Production
 
