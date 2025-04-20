@@ -5,6 +5,7 @@ const isPublicRoute = createRouteMatcher([
   '/privacy-android',
   '/privacy',
   '/support',
+  '/about',
   '/instruction',
   '/account-deleted',
   '/sign-in(.*)',

@@ -17,7 +17,7 @@ export default function Page() {
         <Link href="/">
           <Image
             src={logo}
-            alt="Ethical Scanner Logo"
+            alt="Life-Coaching AI Logo"
             width={50}
             height={50}
             className="rounded-full transition hover:opacity-80"
