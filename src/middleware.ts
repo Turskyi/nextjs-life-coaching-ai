@@ -13,6 +13,8 @@ const isPublicRoute = createRouteMatcher([
   '/api/anonymous-chat',
   '/api/anonymous-chat-android-en',
   '/api/chat-android-en',
+  '/api/chat-ios-en',
+  '/api/chat-ios-ua',
   '/api/anonymous-chat-android-ua',
   '/api/chat-android-ua',
   '/api/anonymous-chat-ios-en',
