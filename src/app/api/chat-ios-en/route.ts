@@ -3,6 +3,7 @@ import prisma from '@/lib/db/prisma';
 import openai, { getEmbedding } from '@/lib/openai';
 import { OpenAIStream, StreamingTextResponse } from 'ai';
 import { ChatCompletionMessage } from 'openai/resources/index.mjs';
+import { TOP_GOALS_LIMIT } from '../../../../constants';
 
 export async function POST(req: Request) {
   try {
@@ -29,7 +30,7 @@ export async function POST(req: Request) {
     const vectorQueryResponse = await goalsIndex.query({
       vector: embedding,
       // How many goals to return.
-      topK: 10,
+      topK: TOP_GOALS_LIMIT,
       filter: { userId },
     });
 
