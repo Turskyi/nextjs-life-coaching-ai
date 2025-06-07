@@ -114,7 +114,7 @@ export default function Page() {
             </li>
             <li>
               <a
-                href="https://turskyi.com/#/support"
+                href={`https://${DEVELOPER_DOMAIN}/#/support`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-blue-600 underline"

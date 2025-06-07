@@ -56,12 +56,12 @@ export default function Page() {
           <p>
             Or reach out using the contact form on the developer’s support page:{' '}
             <a
-              href="https://turskyi.com/#/support"
+              href={`https://${DEVELOPER_DOMAIN}/#/support`}
               className="text-blue-600 underline"
               target="_blank"
               rel="noopener noreferrer"
             >
-              turskyi.com/support
+              {DEVELOPER_DOMAIN}/support
             </a>
           </p>
         </div>

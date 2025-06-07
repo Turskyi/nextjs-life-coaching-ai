@@ -2,7 +2,6 @@
 
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
-import { HOME } from '../../../constants';
 
 export default function AccountDeletedPage() {
   const router = useRouter();

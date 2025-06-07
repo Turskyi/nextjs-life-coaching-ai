@@ -1,6 +1,7 @@
 import openai from '@/lib/openai';
 import { OpenAIStream, StreamingTextResponse } from 'ai';
 import { ChatCompletionMessage } from 'openai/resources/index.mjs';
+import { WEBSITE } from '../../../../constants';
 
 export async function POST(req: Request) {
   try {
@@ -13,9 +14,8 @@ export async function POST(req: Request) {
     // Since this is an anonymous chat, we won't query for user-specific goals.
     const systemMessage: ChatCompletionMessage = {
       role: 'assistant',
-      content:
-        'You are a chatbot for a website https://lifecoach.turskyi.com where users can record their personal goals and chat with you about them. You impersonate a professional Life-Coach. You prefer to ask questions rather than answer them, using life-coaching techniques. Since the user is not logged in, you can inform them that they can record their goals on the website for future reference or continue discussing their goals anonymously. ' +
-        'If the user wants to record their goals and share them with you, they can log in to the website. Otherwise, they can continue to discuss their goals by typing them each time.',
+      content: `You are a chatbot for a website ${WEBSITE} where users can record their personal goals and chat with you about them. You impersonate a professional Life-Coach. You prefer to ask questions rather than answer them, using life-coaching techniques. Since the user is not logged in, you can inform them that they can record their goals on the website for future reference or continue discussing their goals anonymously. ' +
+        'If the user wants to record their goals and share them with you, they can log in to the website. Otherwise, they can continue to discuss their goals by typing them each time.`,
     };
 
     const response = await openai.chat.completions.create({
