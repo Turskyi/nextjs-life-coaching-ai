@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   title: 'Privacy Policy',
 };
 
-const updateDate = 'October 2024';
+const updateDate = 'February 2026';
 
 export default function Page() {
   return (
@@ -61,6 +61,25 @@ export default function Page() {
             </li>
           </ul>
 
+          <H2>Use of AI Services</H2>
+          <p>
+            {APP_NAME} uses a third-party artificial intelligence provider,
+            OpenAI (GPT-4o-mini), to generate coaching responses within the chat
+            feature.
+          </p>
+          <p>
+            When you send a message in the chat, the content of your message is
+            securely transmitted to OpenAI&apos;s API for processing. If you are
+            signed in, your defined goals may also be included in the request to
+            provide contextual responses.
+          </p>
+          <p>
+            We do not intentionally transmit personally identifiable
+            information, such as your email address or internal account
+            identifiers, to OpenAI. Data is processed solely for the purpose of
+            generating responses within the app.
+          </p>
+
           <H2>Data Storage and Security</H2>
           <p>
             Your goals and related data are securely stored in{' '}
@@ -110,24 +129,28 @@ export default function Page() {
             - <strong>Account Deletion</strong>: You can delete your account and
             all associated data by following the instructions on our{' '}
             <a href="/instruction">Account Deletion Instructions</a> page. To
-            manage your account details (note: account details can only be edited on the website version due to current mobile limitations; the mobile app allows you to use your credentials or delete your account entirely), log in
-            and navigate to the account button at the top of the{' '}
-            <a href="/goals">Goals</a> page. From
-            there, select &quot;Manage account&quot; to access account
-            management options provided by Clerk. Please note that deleting your
-            account via Clerk only removes your account details, but not your
-            goals. To delete your account along with your goals, follow the
-            instructions on our account deletion page. After deleting your
-            account, all associated data, including your email, user ID, and
-            goals, will be permanently removed.
+            manage your account details (note: account details can only be
+            edited on the website version due to current mobile limitations; the
+            mobile app allows you to use your credentials or delete your account
+            entirely), log in and navigate to the account button at the top of
+            the <a href="/goals">Goals</a> page. From there, select &quot;Manage
+            account&quot; to access account management options provided by
+            Clerk. Please note that deleting your account via Clerk only removes
+            your account details, but not your goals. To delete your account
+            along with your goals, follow the instructions on our account
+            deletion page. After deleting your account, all associated data,
+            including your email, user ID, and goals, will be permanently
+            removed.
           </p>
           <H2>Data Sharing and Disclosure</H2>
           <p>
             We do not sell, trade, or rent your personal identification
-            information to others. We may share some information with
-            third-party services like Clerk for authentication purposes, but we
-            ensure that any data shared is handled securely and in compliance
-            with applicable privacy laws.
+            information to others. We may share limited data with third-party
+            services necessary to operate the app, including Clerk for
+            authentication and OpenAI for AI-powered response generation. Any
+            data shared is transmitted securely and used solely for providing
+            the app&apos;s functionality, in compliance with applicable privacy
+            laws.
           </p>
           <p>
             We use{' '}
