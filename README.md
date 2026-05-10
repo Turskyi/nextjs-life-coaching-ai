@@ -165,8 +165,9 @@ interactive chatbot and explore your potential.
 ## Credits
 
 This project is based on the
-[Next.js 14 Custom Chatbot (OpenAI ChatGPT, Vercel AI SDK, Pinecone, Shadcn UI, TypeScript, Tailwind)](https://youtu.be/mkJbEP5GeRA?si=UBzGnGOKHgawNK1-)
+[Next.js 14 Custom Chatbot (Vercel AI SDK, Pinecone, Shadcn UI, TypeScript, Tailwind)](https://youtu.be/mkJbEP5GeRA?si=UBzGnGOKHgawNK1-)
 by [Coding in Flow](https://github.com/codinginflow) YouTube channel.
 All credit goes to the original author
 [Florian Walther](https://github.com/florianwalther-private).
-I only followed along and made some minor changes.
+I only followed along and made some major changes, including migrating to a
+multi-provider AI fallback system (Groq, Mistral, Gemini).

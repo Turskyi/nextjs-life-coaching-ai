@@ -1,21 +1,21 @@
 import { goalsIndex } from '@/lib/db/pinecone';
 import prisma from '@/lib/db/prisma';
-import openai, { getEmbedding } from '@/lib/openai';
-import { OpenAIStream, StreamingTextResponse } from 'ai';
-import { ChatCompletionMessage } from 'openai/resources/index.mjs';
-import { TOP_GOALS_LIMIT } from '../../../../constants';
+import { generateChatResponse } from '@/lib/ai';
+import { getEmbedding } from '@/lib/gemini';
+import { getChatPrompt, getNoGoalsContent } from '@/lib/prompts';
+import { Message } from 'ai';
 
 export async function POST(req: Request) {
   try {
     const body = await req.json();
 
-    const messages: ChatCompletionMessage[] = body.messages;
+    const messages: Message[] = body.messages;
 
     // Extract the userId from the request body.
     const userId: string = body.userId;
 
-    if (!userId || userId.trim() === '') {
-      return new Response('(｡•̀ᴗ-)✧ Unauthorized: userId is missing', {
+    if (!userId) {
+      return new Response('(｡•̀ᴗ-)✧ Unauthorized: missing userId.', {
         status: 401,
       });
     }
@@ -24,13 +24,13 @@ export async function POST(req: Request) {
     const messagesTruncated = messages.slice(-6);
 
     const embedding = await getEmbedding(
-      messagesTruncated.map((message) => message.content).join('\n'),
+      messagesTruncated.map((message: Message) => message.content).join('\n'),
     );
 
     const vectorQueryResponse = await goalsIndex.query({
       vector: embedding,
       // How many goals to return.
-      topK: TOP_GOALS_LIMIT,
+      topK: 4,
       filter: { userId },
     });
 
@@ -53,26 +53,15 @@ export async function POST(req: Request) {
       .join('\n\n');
 
     if (!goalsContent) {
-      goalsContent =
-        'No relevant goals found. Help the user define a S.M.A.R.T. goal (Specific, Measurable, Achievable, Relevant, Time-bound) and teach them how to set it.';
+      goalsContent = getNoGoalsContent('en');
     }
 
-    const systemMessage: ChatCompletionMessage = {
-      role: 'assistant',
-      content:
-        "You are a chatbot for an iOS app Life-Coaching AI where user can record their personal goals and chat with you about them. You impersonate a professional Life-Coach. You prefer ask questions rather than answer them, using life-coaching techniques. If user does not have goals you help him define one, if user has goals you respond to the user's request based on their existing goals. " +
-        'The relevant goals for this query are:\n' +
-        goalsContent,
+    const systemMessage = {
+      role: 'system',
+      content: getChatPrompt('en', 'ios', goalsContent),
     };
 
-    const response = await openai.chat.completions.create({
-      model: 'gpt-4o-mini',
-      stream: true,
-      messages: [systemMessage, ...messagesTruncated],
-    });
-
-    const stream = OpenAIStream(response);
-    return new StreamingTextResponse(stream);
+    return await generateChatResponse([systemMessage, ...messagesTruncated]);
   } catch (error) {
     console.error(error);
     return Response.json(

@@ -63,21 +63,22 @@ export default function Page() {
 
           <H2>Use of AI Services</H2>
           <p>
-            {APP_NAME} uses a third-party artificial intelligence provider,
-            OpenAI (GPT-4o-mini), to generate coaching responses within the chat
-            feature.
+            {APP_NAME} uses third-party artificial intelligence providers,
+            including Groq, Mistral AI, and Google (Gemini), to generate
+            coaching responses within the chat feature. We use a multi-provider
+            fallback system to ensure high availability and resilience.
           </p>
           <p>
             When you send a message in the chat, the content of your message is
-            securely transmitted to OpenAI&apos;s API for processing. If you are
-            signed in, your defined goals may also be included in the request to
-            provide contextual responses.
+            securely transmitted to these providers&apos; APIs for processing.
+            If you are signed in, your defined goals may also be included in the
+            request to provide contextual responses.
           </p>
           <p>
             We do not intentionally transmit personally identifiable
             information, such as your email address or internal account
-            identifiers, to OpenAI. Data is processed solely for the purpose of
-            generating responses within the app.
+            identifiers, to these AI providers. Data is processed solely for the
+            purpose of generating responses within the app.
           </p>
 
           <H2>Data Storage and Security</H2>
@@ -147,10 +148,10 @@ export default function Page() {
             We do not sell, trade, or rent your personal identification
             information to others. We may share limited data with third-party
             services necessary to operate the app, including Clerk for
-            authentication and OpenAI for AI-powered response generation. Any
-            data shared is transmitted securely and used solely for providing
-            the app&apos;s functionality, in compliance with applicable privacy
-            laws.
+            authentication and modern AI providers (Groq, Mistral, Google) for
+            AI-powered response generation. Any data shared is transmitted
+            securely and used solely for providing the app&apos;s functionality,
+            in compliance with applicable privacy laws.
           </p>
           <p>
             We use{' '}

@@ -109,9 +109,10 @@ export default function Page() {
           <p>
             We do not sell, trade, or rent your personal identification
             information to others. We may share some information with
-            third-party services like Clerk for authentication purposes, but we
-            ensure that any data shared is handled securely and in compliance
-            with applicable privacy laws.
+            third-party services like Clerk for authentication purposes and
+            modern AI providers (Groq, Mistral, Google) for AI-powered response
+            generation, but we ensure that any data shared is handled securely
+            and in compliance with applicable privacy laws.
           </p>
           <p>
             We use{' '}

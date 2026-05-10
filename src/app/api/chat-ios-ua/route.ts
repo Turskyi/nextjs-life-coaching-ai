@@ -1,20 +1,21 @@
 import { goalsIndex } from '@/lib/db/pinecone';
 import prisma from '@/lib/db/prisma';
-import openai, { getEmbedding } from '@/lib/openai';
-import { OpenAIStream, StreamingTextResponse } from 'ai';
-import { ChatCompletionMessage } from 'openai/resources/index.mjs';
+import { generateChatResponse } from '@/lib/ai';
+import { getEmbedding } from '@/lib/gemini';
+import { getChatPrompt, getNoGoalsContent } from '@/lib/prompts';
+import { Message } from 'ai';
 
 export async function POST(req: Request) {
   try {
     const body = await req.json();
 
-    const messages: ChatCompletionMessage[] = body.messages;
+    const messages: Message[] = body.messages;
 
     // Extract the userId from the request body.
     const userId: string = body.userId;
 
     if (!userId) {
-      return new Response('(｡•̀ᴗ-)✧ Неавторизовано: відсутній "userId".', {
+      return new Response('(｡•̀ᴗ-)✧ Неавторизовано: відсутній userId.', {
         status: 401,
       });
     }
@@ -23,7 +24,7 @@ export async function POST(req: Request) {
     const messagesTruncated = messages.slice(-6);
 
     const embedding = await getEmbedding(
-      messagesTruncated.map((message) => message.content).join('\n'),
+      messagesTruncated.map((message: Message) => message.content).join('\n'),
     );
 
     const vectorQueryResponse = await goalsIndex.query({
@@ -52,26 +53,15 @@ export async function POST(req: Request) {
       .join('\n\n');
 
     if (!goalsContent) {
-      goalsContent =
-        'Цілей не знайдено. Допоможіть користувачеві визначити ціль за методом S.M.A.R.T. (Конкретна (Specific), Вимірювана (Measurable), Досяжна (Achievable), Актуальна (Relevant), Обмежена в часі (Time-bound)) та навчіть його, як її встановити.';
+      goalsContent = getNoGoalsContent('ua');
     }
 
-    const systemMessage: ChatCompletionMessage = {
-      role: 'assistant',
-      content:
-        'Ви – чат-бот для мобільного айос застосунку "Лайф-Коучинг зі штучним інтелектом", де користувач може записувати свої особисті цілі та спілкуватися з вами про них. Ви граєте роль професійного лайф-коуча. Ви віддаєте перевагу задавати питання, а не давати відповіді, використовуючи техніки лайф-коучингу. Якщо у користувача немає цілей, ви допомагаєте йому визначити одну. Якщо у користувача є цілі, ви відповідаєте на запити користувача на основі його існуючих цілей. ' +
-        'Відповідні цілі для цього запиту:\n' +
-        goalsContent,
+    const systemMessage = {
+      role: 'system',
+      content: getChatPrompt('ua', 'ios', goalsContent),
     };
 
-    const response = await openai.chat.completions.create({
-      model: 'gpt-4o-mini',
-      stream: true,
-      messages: [systemMessage, ...messagesTruncated],
-    });
-
-    const stream = OpenAIStream(response);
-    return new StreamingTextResponse(stream);
+    return await generateChatResponse([systemMessage, ...messagesTruncated]);
   } catch (error) {
     console.error(error);
     return Response.json(
