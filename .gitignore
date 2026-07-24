@@ -37,6 +37,6 @@ yarn-error.log*
 next-env.d.ts
 
 # Files with environment variables.
-.env
 .idea
 /.idea/
+/.artifacts/
