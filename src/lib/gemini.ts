@@ -11,7 +11,7 @@ const genAI = new GoogleGenerativeAI(apiKey);
 export default genAI;
 
 export async function getGeminiChatStream(messages: any[]) {
-  const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash-lite' });
+  const model = genAI.getGenerativeModel({ model: 'gemini-3.5-flash-lite' });
 
   // Convert standard messages to Gemini format
   const systemInstruction = messages.find((m) => m.role === 'system')?.content;
@@ -23,7 +23,7 @@ export async function getGeminiChatStream(messages: any[]) {
     }));
 
   const modelWithSystem = genAI.getGenerativeModel({
-    model: 'gemini-2.0-flash-lite',
+    model: 'gemini-3.5-flash-lite',
     systemInstruction: systemInstruction,
   });
 

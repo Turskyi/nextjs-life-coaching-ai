@@ -12,7 +12,7 @@ export default groq;
 
 export async function getGroqChatStream(messages: any[]) {
   return groq.chat.completions.create({
-    model: 'llama-3.3-70b-versatile',
+    model: 'qwen/qwen3.6-27b',
     stream: true,
     messages,
   });
