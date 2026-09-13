@@ -18,6 +18,7 @@ export async function generateChatResponse(messages: any[]) {
     const stream = await getValidatedStream(
       getGroqChatStream(messages),
       GroqStream,
+      data,
     );
     data.append({ model: 'Groq: Qwen 32B' });
     return new StreamingTextResponse(stream, {}, data);
@@ -29,6 +30,7 @@ export async function generateChatResponse(messages: any[]) {
       const stream = await getValidatedStream(
         getMistralChatStream(messages),
         MistralStream,
+        data,
       );
       data.append({ model: 'Mistral Small' });
       return new StreamingTextResponse(stream, {}, data);
@@ -40,6 +42,7 @@ export async function generateChatResponse(messages: any[]) {
         const stream = await getValidatedStream(
           getGeminiChatStream(messages),
           GoogleGenerativeAIStream,
+          data,
         );
         data.append({ model: 'Gemini 1.5 Flash' });
         return new StreamingTextResponse(stream, {}, data);
@@ -61,6 +64,7 @@ export async function generateChatResponse(messages: any[]) {
 async function getValidatedStream(
   providerPromise: Promise<any>,
   converter: (res: any) => ReadableStream,
+  data: StreamData,
 ): Promise<ReadableStream> {
   const response = await providerPromise;
   const originalStream = converter(response);
@@ -76,19 +80,30 @@ async function getValidatedStream(
   // Re-assemble the stream by putting the first chunk back
   return new ReadableStream({
     async start(controller) {
-      controller.enqueue(firstChunk.value);
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        controller.enqueue(value);
+      try {
+        controller.enqueue(firstChunk.value);
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          controller.enqueue(value);
+        }
+      } catch (error) {
+        controller.error(error);
+      } finally {
+        controller.close();
+        data.close();
       }
-      controller.close();
+    },
+    async cancel(reason) {
+      await reader.cancel(reason);
+      data.close();
     },
   });
 }
 
 function createFilteringStream() {
   let inThinkTag = false;
+  let isLeadingWhitespace = true;
   const decoder = new TextDecoder();
   const encoder = new TextEncoder();
 
@@ -118,6 +133,22 @@ function createFilteringStream() {
             processed = processed.substring(0, startIdx);
             inThinkTag = true;
           }
+        }
+      }
+
+      if (isLeadingWhitespace && processed) {
+        const trimmed = processed.trimStart();
+        if (trimmed !== processed) {
+          console.log(
+            `[AI Stream] Trimming leading whitespace from: ${JSON.stringify(processed)}`,
+          );
+        }
+        processed = trimmed;
+        if (processed) {
+          isLeadingWhitespace = false;
+          console.log(
+            `[AI Stream] First non-whitespace content: ${JSON.stringify(processed)}`,
+          );
         }
       }
 
