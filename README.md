@@ -58,7 +58,7 @@ ORM (Object-Relational Mapping) tool to interact with MongoDB seamlessly.
 
 ### Prerequisites
 
-- Node.js (v14 or later)
+- Node.js (v24 or later)
 - npm or yarn
 - Basic understanding of Next.js and TypeScript concepts is recommended.
 

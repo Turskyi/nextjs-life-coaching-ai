@@ -19,6 +19,7 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  console.log('Node.js version:', process.version);
   return (
     <ClerkProvider>
       <html lang="en">
