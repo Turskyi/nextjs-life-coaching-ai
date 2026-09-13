@@ -71,13 +71,14 @@ async function getValidatedStream(
   const filteringStream = originalStream.pipeThrough(createFilteringStream());
 
   const reader = filteringStream.getReader();
-  const firstChunk = await reader.read();
+  let firstChunk = await reader.read();
 
+  // If the first chunk is empty (e.g., all leading whitespace was trimmed),
+  // reader.read() will return the next non-empty chunk or done: true.
   if (firstChunk.done) {
     throw new Error('Provider returned an empty response after filtering.');
   }
 
-  // Re-assemble the stream by putting the first chunk back
   return new ReadableStream({
     async start(controller) {
       try {
@@ -110,50 +111,78 @@ function createFilteringStream() {
   return new TransformStream({
     transform(chunk, controller) {
       const text = typeof chunk === 'string' ? chunk : decoder.decode(chunk);
-      let processed = text;
 
+      // The AI SDK protocol uses prefixes: 0 for text, 1 for function calls, 2 for data, etc.
+      // We only want to filter and trim text chunks (type 0).
+      if (!text.startsWith('0:')) {
+        controller.enqueue(encoder.encode(text));
+        return;
+      }
+
+      // Extract content from protocol format: 0:"content"\n
+      let content = '';
+      try {
+        // Find the start and end of the quoted string
+        const firstQuote = text.indexOf('"');
+        const lastQuote = text.lastIndexOf('"');
+        if (firstQuote !== -1 && lastQuote !== -1 && firstQuote !== lastQuote) {
+          content = JSON.parse(text.substring(firstQuote, lastQuote + 1));
+        } else if (firstQuote !== -1) {
+          // Partial chunk, just take everything after the quote
+          content = text.substring(firstQuote + 1);
+        }
+      } catch (e) {
+        // Fallback if parsing fails
+        content = text.substring(3).replace(/"\n?$/, '');
+      }
+
+      // 1. Handle <think> tags within the text content
       if (inThinkTag) {
-        const endIdx = processed.indexOf('</think>');
+        const endIdx = content.indexOf('</think>');
         if (endIdx !== -1) {
-          processed = processed.substring(endIdx + 8);
+          content = content.substring(endIdx + 8);
           inThinkTag = false;
         } else {
-          processed = '';
+          content = '';
         }
       }
 
       if (!inThinkTag) {
-        const startIdx = processed.indexOf('<think>');
+        const startIdx = content.indexOf('<think>');
         if (startIdx !== -1) {
-          const endIdx = processed.indexOf('</think>', startIdx);
+          const endIdx = content.indexOf('</think>', startIdx);
           if (endIdx !== -1) {
-            processed =
-              processed.substring(0, startIdx) + processed.substring(endIdx + 8);
+            content =
+              content.substring(0, startIdx) + content.substring(endIdx + 8);
           } else {
-            processed = processed.substring(0, startIdx);
+            content = content.substring(0, startIdx);
             inThinkTag = true;
           }
         }
       }
 
-      if (isLeadingWhitespace && processed) {
-        const trimmed = processed.trimStart();
-        if (trimmed !== processed) {
+      // 2. Handle leading whitespace from the beginning of the entire stream
+      if (isLeadingWhitespace && content) {
+        const trimmed = content.trimStart();
+        if (trimmed !== content) {
           console.log(
-            `[AI Stream] Trimming leading whitespace from: ${JSON.stringify(processed)}`,
+            `[AI Stream] Trimming leading whitespace from content: ${JSON.stringify(content)}`,
           );
         }
-        processed = trimmed;
-        if (processed) {
+        content = trimmed;
+        if (content) {
           isLeadingWhitespace = false;
           console.log(
-            `[AI Stream] First non-whitespace content: ${JSON.stringify(processed)}`,
+            `[AI Stream] First non-whitespace content identified: ${JSON.stringify(content)}`,
           );
         }
       }
 
-      if (processed) {
-        controller.enqueue(encoder.encode(processed));
+      // Re-wrap the filtered content back into the protocol format
+      if (content || !isLeadingWhitespace) {
+        // Note: We only skip enqueuing if the chunk was entirely filtered out (e.g. whitespace or think tag)
+        // AND we haven't seen any actual content yet.
+        controller.enqueue(encoder.encode(`0:${JSON.stringify(content)}\n`));
       }
     },
   });
