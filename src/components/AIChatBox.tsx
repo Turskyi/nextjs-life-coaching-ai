@@ -61,6 +61,7 @@ export default function AIChatBox({ open, onClose }: AIChatBoxProps) {
     setMessages,
     isLoading,
     error,
+    data,
   } = useChat({ api: 'api/chat-web-en' });
 
   const inputRef = useRef<HTMLInputElement>(null);
@@ -88,6 +89,14 @@ export default function AIChatBox({ open, onClose }: AIChatBoxProps) {
 
   const lastMessageIsUser = messages[messages.length - 1]?.role === 'user';
 
+  // Get the model name from the stream data if available
+  const modelName = (
+    data
+      ?.slice()
+      .reverse()
+      .find((d: any) => d.model) as any
+  )?.model;
+
   return (
     <div
       className={cn(
@@ -101,8 +110,16 @@ export default function AIChatBox({ open, onClose }: AIChatBoxProps) {
       </button>
       <div className="flex h-[600px] flex-col rounded border bg-background shadow-xl">
         <div className="mt-3 h-full overflow-y-auto px-3" ref={scrollRef}>
-          {messages.map((message) => (
-            <ChatMessage message={message} key={message.id} />
+          {messages.map((message, index) => (
+            <ChatMessage
+              message={message}
+              key={message.id}
+              modelName={
+                index === messages.length - 1 && message.role === 'assistant'
+                  ? modelName
+                  : undefined
+              }
+            />
           ))}
           {isLoading && lastMessageIsUser && (
             <ChatMessage
@@ -154,8 +171,10 @@ export default function AIChatBox({ open, onClose }: AIChatBoxProps) {
 
 function ChatMessage({
   message: { role, content },
+  modelName,
 }: {
   message: Pick<Message, 'role' | 'content'>;
+  modelName?: string;
 }) {
   const { user } = useUser();
 
@@ -164,19 +183,31 @@ function ChatMessage({
   return (
     <div
       className={cn(
-        'mb-3 flex items-center',
+        'mb-3 flex items-start',
         isAiMessage ? 'me-5 justify-start' : 'ms-5 justify-end',
       )}
     >
-      {isAiMessage && <Bot className="mr-2 shrink-0" />}
-      <p
+      {isAiMessage && <Bot className="mr-2 mt-1 shrink-0" />}
+      <div
         className={cn(
-          'whitespace-pre-line rounded-md border px-3 py-2',
-          isAiMessage ? 'bg-background' : 'bg-primary text-primary-foreground',
+          'flex flex-col',
+          isAiMessage ? 'items-start' : 'items-end',
         )}
       >
-        {content}
-      </p>
+        <p
+          className={cn(
+            'whitespace-pre-line rounded-md border px-3 py-2',
+            isAiMessage ? 'bg-background' : 'bg-primary text-primary-foreground',
+          )}
+        >
+          {content}
+        </p>
+        {isAiMessage && modelName && (
+          <span className="mt-1 text-[10px] text-muted-foreground opacity-50">
+            via {modelName}
+          </span>
+        )}
+      </div>
       {!isAiMessage && user?.imageUrl && (
         <Image
           src={user.imageUrl}
